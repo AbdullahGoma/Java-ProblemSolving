@@ -1,0 +1,27 @@
+import java.util.*;
+
+public class Main {
+    public static int fibonacci_numbers(int n)
+    {
+      if(n == 0){
+        return 0;
+      }
+      else if(n == 1){
+        return 1;
+      }
+      else{
+        return fibonacci_numbers(n-2) + fibonacci_numbers(n-1);
+      }
+    }
+    public static void main(String[] args) {
+      Scanner m = new Scanner(System.in);
+      int x = m.nextInt();
+      for(int i = 0;i < x;i++){
+          if(i == 0){
+              System.out.print(fibonacci_numbers(0));
+          }else{
+              System.out.print(", "+fibonacci_numbers(i));
+          }
+      }
+    }
+}

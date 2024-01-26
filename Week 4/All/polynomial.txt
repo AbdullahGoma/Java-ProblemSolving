@@ -1,0 +1,147 @@
+package com.Bif.MathCondenser;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Scanner;
+public class MathCondenser {
+    public static void main(String[] args) {
+        //input equations
+        String equation = "a * b + 10 * 3 + 50 * a + c * 3 * b * a * 4 * 3";
+        String equation_temp = "";
+
+        //constant character lists
+        ArrayList<String> alphabet = new ArrayList<String>();
+        ArrayList<String> numbers = new ArrayList<String>();
+        ArrayList<String> functions = new ArrayList<String>();
+
+        //equation separated into a list of products
+        ArrayList<String> products = new ArrayList<String>();
+
+        //variable definitions of each product
+        ArrayList<String> definitions = new ArrayList<String>();
+        ArrayList<String> definitionsDuplicate = new ArrayList<String>();
+
+        //collected constants for each product
+        ArrayList<String> multipliers = new ArrayList<String>();
+
+        //reduced terms for the equation
+        ArrayList<String> terms = new ArrayList<String>();
+
+        //fill alphabet arrayList
+        for(char character = 'a'; character <= 'z'; ++character){
+            alphabet.add(character-'a', character + "");
+        }
+
+        //fill numbers arrayList
+        for(int k = 0; k < 10; k++) {
+            numbers.add("" + k);
+        }
+
+        //fill functions arrayList
+        functions.add("*");
+        functions.add("+");
+
+        //remove spaces from equation
+        for(int k = 0; k < equation.length(); k++) {
+            if(equation.charAt(k) == ' ')
+                continue;
+            equation_temp += equation.charAt(k);
+        }
+        equation = equation_temp;
+        System.out.println("Equation: " + equation);
+
+        //validate allowed characters; exit if not a-z, 0-9, or *,+
+        for(int k = 0; k < equation.length(); k++) {
+            if(!alphabet.contains(equation.charAt(k) + "") && !numbers.contains(equation.charAt(k) + "") && !functions.contains(equation.charAt(k) + "")) {
+                System.out.println("Valid Characters: false, exiting");
+                System.exit(0);
+            }
+        }
+        System.out.println("Valid Characters: true, continuing");
+
+        //parse the equation into sets of products
+        Scanner scan = new Scanner(equation);
+        scan.useDelimiter("\\+");
+        while(scan.hasNext()) {
+            products.add(scan.next());
+        }
+        System.out.println("Product set:" + products);
+
+        //fill definition such that (2 * b * a * 3 * c) -> (abc)
+        String productAtLocationK;
+        for(int k = 0; k < products.size(); k++) {
+            productAtLocationK = products.get(k);
+            String definition = "";
+            for(int j = 0; j < productAtLocationK.length(); j++) {
+                //if it is a letter add it to definition
+                if(alphabet.contains(productAtLocationK.charAt(j) + "")) {
+                    definition += productAtLocationK.charAt(j);
+                }
+            }
+
+            //alphabetizes definition
+            char[] tempDef = definition.toCharArray();
+            Arrays.sort(tempDef);
+            definitions.add(new String(tempDef));
+            definitionsDuplicate.add(new String(tempDef));
+        }
+
+        System.out.println("Definition set: " + definitions);       
+
+        //fill multiplier set such that (2 * b * a * 3 * c) -> (6)
+        for(int k = 0; k < products.size(); k++) {          
+            //get the product; default multiplier = 1; character at Location in product;
+            productAtLocationK = products.get(k);
+            int multiplier = 1;
+            String letterInProduct;
+
+            //set up scanner for every product in products array with * separator
+            scan = new Scanner(productAtLocationK);
+            scan.useDelimiter("\\*");
+
+            //loop through product, if (not letter -> number) then update multiplier
+            while(scan.hasNext()) {
+                letterInProduct = scan.next();
+                if(!alphabet.contains(letterInProduct)) {
+                    multiplier *= Integer.parseInt(letterInProduct);
+                }   
+            }
+            multipliers.add(multiplier + "");
+        }
+        System.out.println("Multiplier set: " + multipliers);
+
+        //combine duplicate definitions
+        int indexOfMultiplier = 0;
+        while(!definitionsDuplicate.isEmpty()) {
+            //sum of the constant and its duplicates to combine terms
+            int constantSum = Integer.parseInt(multipliers.get(indexOfMultiplier++));
+            String definition = definitionsDuplicate.remove(0);
+
+            //check for duplicates, add them to sum
+            while(definitionsDuplicate.contains(definition)) {
+                constantSum += Integer.parseInt(multipliers.get(definitionsDuplicate.indexOf(definition)));
+                definitionsDuplicate.remove(definitionsDuplicate.indexOf(definition));
+            }
+
+            //ignore constant if 1
+            if(constantSum != 1)
+                terms.add(constantSum + definition);
+            else
+                terms.add(definition);
+        }
+        System.out.println("Terms Set: " + terms);
+
+        //Format equation
+        String reducedEquation = "";
+        for(String term : terms) {
+            reducedEquation += term + " + ";
+        }
+        if(reducedEquation.length() > 1) {
+            reducedEquation = reducedEquation.substring(0, reducedEquation.length() - 2);
+        }
+        System.out.println("Reduced Equation: " + reducedEquation);
+
+        //cleanup
+        scan.close();
+    }
+
+}

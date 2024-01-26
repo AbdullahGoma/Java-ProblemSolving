@@ -1,0 +1,75 @@
+int beg = item.lastIndexOf("\"",pos);
+int end = item.indexOf("\"", pos+1);
+System.out.println(item.substring(beg+1,end));
+
+
+.................
+
+URLResource file = new  URLResource("http://someURL");
+   	for (String item : file.words()) {
+       	   String itemLower = item.toLowerCase();
+       	   int pos = itemLower.indexOf("youtube.com");
+       	   if (pos != -1) {
+           	MISSING CODE
+               }
+   	}
+...............................................................
+
+String txt = "Hello World";
+        int x = 4;
+        if(x < txt.length() && txt.charAt(x) == 'o'){
+            System.out.println(txt.toUpperCase());
+            System.out.println(txt.toLowerCase());
+        }
+
+
+......................................
+
+
+
+Each time pos is reset in the while loop it finds the same “TG”.  
+
+String dna = "CTGCCTGCATGATCGTA";
+int pos = dna.indexOf("TG");
+int count = 0;
+while (pos >= 0) {
+  count = count + 1;
+  pos = dna.indexOf("TG",pos);
+}
+System.out.println(count);
+
+...........................................
+public String mystery(String dna) {
+  int pos = dna.indexOf("T");
+  int count = 0;
+  int startPos = 0;
+  String newDna = "";
+  if (pos == -1) {
+    return dna;
+  }
+  while (count < 3) {
+    count += 1;
+    newDna = newDna + dna.substring(startPos,pos);
+    startPos = pos+1;
+    pos = dna.indexOf("T", startPos);
+    if (pos == -1) {
+      break;
+    }
+  }
+  newDna = newDna + dna.substring(startPos);
+  return newDna;
+}
+/............................
+
+
+
+
+
+
+
+
+
+
+
+
+
